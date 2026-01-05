@@ -7,6 +7,8 @@ const app = new express();
 const cookieParse = require("cookie-parser");
 const studentRouter = require("./src/routes/student.routes");
 const teacherRoute = require("./src/routes/teacher.route");
+const superAdminRoute = require("./src/routes/superAdmin.route");
+const path = require("path");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -15,6 +17,8 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
   ipv6Subnet: 56, // Set to 60 or 64 to be less aggressive, or 52 or 48 to be more aggressive
 });
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(limiter);
 // app.use(mongoSanitize());
@@ -50,5 +54,9 @@ app.use("/api/v1", studentRouter);
 // teacher route
 
 app.use("/api/v1", teacherRoute);
+
+// super admin route
+
+app.use("/api/v1", superAdminRoute);
 
 module.exports = app;
