@@ -87,3 +87,40 @@ exports.superAdminProfile = async (req, res) => {
     return errorResponse(res, 500, "Something went worng", error);
   }
 };
+
+exports.superAdminProfileUpdate = async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    // Ensure a file was uploaded
+    // if (!req.file?.filename) {
+    //   return res.status(400).json({ message: "Profile image is required" });
+    // }
+
+    // Prepare the image path
+    const imagePath = `/uploads/profiles/${req.file.filename}`;
+
+    // Prepare update object
+    const updateData = {
+      profileImg: imagePath,
+      email: email,
+      name: name,
+    };
+
+    // Update the user in DB
+    const updatedAdmin = await superAdminModel.findByIdAndUpdate(
+      { _id: req.user.id },
+      updateData,
+      { new: true } // return the updated document
+    );
+
+    if (!updatedAdmin) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return successResponse(res, 200, "Profile update successfully", null);
+  } catch (error) {
+    console.error("Profile update error:", error);
+    return res.status(500).json({ message: "Upload failed", error });
+  }
+};

@@ -19,6 +19,7 @@ const limiter = rateLimit({
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 
 app.use(limiter);
 // app.use(mongoSanitize());
