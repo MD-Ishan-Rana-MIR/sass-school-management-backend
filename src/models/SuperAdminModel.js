@@ -19,7 +19,6 @@ const superAdminSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false,
     },
     role: {
       type: String,

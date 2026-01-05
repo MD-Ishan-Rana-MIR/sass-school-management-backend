@@ -1,9 +1,22 @@
 const {
   superAdminCreate,
+  superAdminLogin,
+  superAdminProfile,
 } = require("../controllers/super-admin/auth/super.admin.auth.controller");
 
-const superAdminRoute = require("express").Router();
+const router = require("express").Router();
 
-superAdminRoute.post("/create-super-admin", superAdminCreate);
+const superAdminAuth = require("../middlewares/super.admin.role.middleware");
+const role = require("../middlewares/role.middleware");
 
-module.exports = superAdminRoute;
+router.post("/create-super-admin", superAdminCreate);
+router.post("/login-super-admin", superAdminLogin);
+
+router.get(
+  "/super-admin-profile",
+  superAdminAuth,
+  role("super-admin"),
+  superAdminProfile
+);
+
+module.exports = router;
