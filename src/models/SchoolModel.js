@@ -11,19 +11,19 @@ const schoolSchema = new Schema(
     },
     schoolLogo: {
       type: String,
-      requird: true,
+      // requird: true,
     },
     schoolEmail: {
       type: String,
       required: true,
+      uniqui: true,
     },
     contactNumber: {
       type: String,
-      required: true,
     },
     schoolId: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
 

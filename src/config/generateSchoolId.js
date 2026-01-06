@@ -1,24 +1,29 @@
 const schoolModel = require("../models/SchoolModel");
 
 const generateSchoolId = async (schoolName) => {
-  const year = new Date().getFullYear().toString(); // 4-digit year
-  const namePart = schoolName.substring(0, 4).toUpperCase(); // first 4 letters
+  console.log("school name is", schoolName);
+  if (!schoolName || typeof schoolName !== "string") {
+    throw new Error("School name is required to generate school ID");
+  }
 
-  // Find existing schools with same prefix
+  const year = new Date().getFullYear().toString();
+  const namePart = schoolName.trim().substring(0, 4).toUpperCase();
+
   const prefix = `${year}${namePart}`;
+
   const lastSchool = await schoolModel
-    .find({ schoolId: { $regex: `^${prefix}` } })
-    .sort({ schoolId: -1 })
-    .limit(1);
+    .findOne({ schoolId: { $regex: `^${prefix}` } })
+    .sort({ schoolId: -1 });
 
   let sequence = 1;
-  if (lastSchool.length > 0) {
-    // Get last 4 digits of last schoolId and increment
-    const lastSeq = parseInt(lastSchool[0].schoolId.slice(-4));
+
+  if (lastSchool?.schoolId) {
+    const lastSeq = parseInt(lastSchool.schoolId.slice(-4), 10);
     sequence = lastSeq + 1;
   }
 
-  const sequenceStr = sequence.toString().padStart(4, "0"); // pad with zeros
+  const sequenceStr = sequence.toString().padStart(4, "0");
+
   return `${prefix}${sequenceStr}`;
 };
 

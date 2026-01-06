@@ -9,6 +9,7 @@ const studentRouter = require("./src/routes/student.routes");
 const teacherRoute = require("./src/routes/teacher.route");
 const superAdminRoute = require("./src/routes/superAdmin.route");
 const path = require("path");
+const schoolRoute = require("./src/routes/school.route");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -19,6 +20,7 @@ const limiter = rateLimit({
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 
 app.use(limiter);
@@ -59,5 +61,9 @@ app.use("/api/v1", teacherRoute);
 // super admin route
 
 app.use("/api/v1", superAdminRoute);
+
+// school route
+
+app.use("/api/v1", schoolRoute);
 
 module.exports = app;
