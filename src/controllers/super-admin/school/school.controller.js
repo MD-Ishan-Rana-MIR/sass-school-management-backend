@@ -15,7 +15,7 @@ exports.createSchool = async (req, res) => {
     }
 
     const schoolLogo = `/uploads/schools/${req.file.filename}`;
-    const schoolId = await generateSchoolId("ishan");
+    const schoolId = await generateSchoolId(schoolName);
 
     const payload = {
       schoolName,
@@ -66,6 +66,64 @@ exports.allSchool = async (req, res) => {
       totalPages: Math.ceil(total / limitNum),
       schools: data,
     });
+  } catch (error) {
+    return errorResponse(res, 500, "Something went wrong", error);
+  }
+};
+
+exports.schoolDetails = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const filter = {
+      _id: id,
+    };
+
+    const data = await schoolModel.findById({ _id: id });
+
+    if (!data) return errorResponse(res, 404, "School not found", null);
+
+    return successResponse(res, 200, "School find successfully", data);
+  } catch (error) {
+    return errorResponse(res, 500, "Something went wrong", error);
+  }
+};
+
+exports.updateSchool = async (req, res) => {
+  try {
+    const { schoolName, schoolEmail, contactNumber } = req.body;
+    const id = req.params.id;
+
+    // Build payload dynamically
+    const payload = {};
+    if (schoolName) payload.schoolName = schoolName;
+    if (schoolEmail) payload.schoolEmail = schoolEmail;
+    if (contactNumber) payload.contactNumber = contactNumber;
+
+    // Only update schoolLogo if a new file is uploaded
+    if (req.file) {
+      payload.schoolLogo = `/uploads/schools/${req.file.filename}`;
+    }
+
+    // Update school
+    await schoolModel.findByIdAndUpdate(id, payload);
+
+    // if (!data) {
+    //   return errorResponse(res, 404, "School not found", null);
+    // }
+
+    return successResponse(res, 200, "School updated successfully", null);
+  } catch (error) {
+    console.error(error);
+    return errorResponse(res, 500, "Something went wrong", error);
+  }
+};
+
+exports.deleteSchool = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await schoolModel.findByIdAndDelete({ _id: id });
+    if (!data) return errorResponse(res, 404, "School not fond", null);
+    return successResponse(res, 200, "School delete successfully", data);
   } catch (error) {
     return errorResponse(res, 500, "Something went wrong", error);
   }
