@@ -10,6 +10,7 @@ const teacherRoute = require("./src/routes/teacher.route");
 const superAdminRoute = require("./src/routes/superAdmin.route");
 const path = require("path");
 const schoolRoute = require("./src/routes/school.route");
+const adminRoute = require("./src/routes/admin.route");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -22,7 +23,7 @@ const limiter = rateLimit({
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(limiter);
 // app.use(mongoSanitize());
 
@@ -65,5 +66,9 @@ app.use("/api/v1", superAdminRoute);
 // school route
 
 app.use("/api/v1", schoolRoute);
+
+// admin route
+
+app.use("/api/v1", adminRoute);
 
 module.exports = app;

@@ -123,4 +123,6 @@ exports.superAdminProfileUpdate = async (req, res) => {
     console.error("Profile update error:", error);
     return res.status(500).json({ message: "Upload failed", error });
   }
+
+  
 };

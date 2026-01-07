@@ -26,14 +26,17 @@ const adminSchema = new Schema(
       required: true,
     },
     schoolId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "school",
       required: true,
     },
-    adminId : {
-        type : String,
-        required : true
-    }
+    adminId: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
   },
   { timestamps: true, versionKey: false }
 );
