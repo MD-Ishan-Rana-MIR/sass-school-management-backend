@@ -37,6 +37,10 @@ const adminSchema = new Schema(
     image: {
       type: String,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true, versionKey: false }
 );
