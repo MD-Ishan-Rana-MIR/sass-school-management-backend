@@ -13,6 +13,13 @@ const {
 const role = require("../middlewares/role.middleware");
 const superAdminAuth = require("../middlewares/super.admin.role.middleware");
 
+const {
+  allAdmin,
+  singleAdmin,
+  deleteAdmin,
+  updateAdmin,
+} = require("../controllers/super-admin/admin/admin.by.super.admin.controller");
+
 adminRoute.post(
   "/create-admin",
   superAdminAuth,
@@ -36,6 +43,37 @@ adminRoute.put(
   role("admin"),
   adminImgUpload.single("image"),
   adminProfileUpdate
+);
+
+// all admin by super admin
+
+adminRoute.get(
+  "/all-admin-by-super-admin",
+  superAdminAuth,
+  role("super-admin"),
+  allAdmin
+);
+
+adminRoute.get(
+  "/singleAdmin/:id",
+  superAdminAuth,
+  role("super-admin"),
+  singleAdmin
+);
+
+adminRoute.delete(
+  "/deleteAdmin/:id",
+  superAdminAuth,
+  role("super-admin"),
+  deleteAdmin
+);
+
+adminRoute.put(
+  "/admin-update/:id",
+  superAdminAuth,
+  role("super-admin"),
+  adminImgUpload.single("image"),
+  updateAdmin
 );
 
 module.exports = adminRoute;

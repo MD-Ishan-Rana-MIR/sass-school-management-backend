@@ -48,6 +48,14 @@ exports.loginAdmin = async (req, res) => {
     const user = await adminModel.findOne({ email });
     if (!user) return errorResponse(res, 404, "User not found", null);
 
+    if (user.role == false)
+      return errorResponse(
+        res,
+        400,
+        "Admin inactive please contact super admin",
+        null
+      );
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return errorResponse(res, 401, "Invalid user", null);
 
