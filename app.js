@@ -11,6 +11,7 @@ const superAdminRoute = require("./src/routes/superAdmin.route");
 const path = require("path");
 const schoolRoute = require("./src/routes/school.route");
 const adminRoute = require("./src/routes/admin.route");
+const notificationRouter = require("./src/routes/notification.route");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -70,5 +71,9 @@ app.use("/api/v1", schoolRoute);
 // admin route
 
 app.use("/api/v1", adminRoute);
+
+// notification route 
+
+app.use("/api/v1",notificationRouter);
 
 module.exports = app;
