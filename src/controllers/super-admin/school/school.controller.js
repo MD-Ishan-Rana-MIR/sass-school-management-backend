@@ -1,5 +1,6 @@
 const generateSchoolId = require("../../../config/generateSchoolId");
 const { errorResponse, successResponse } = require("../../../config/response");
+const notificationModel = require("../../../models/NotificationModel");
 const schoolModel = require("../../../models/SchoolModel");
 
 exports.createSchool = async (req, res) => {
@@ -26,6 +27,14 @@ exports.createSchool = async (req, res) => {
     };
 
     const data = await schoolModel.create(payload);
+
+    await notificationModel.create({
+      title: "New School Created",
+      message: `${schoolName} school has been created successfully.`,
+      type: "school",
+      role : req.user.role
+    });
+
     return successResponse(res, 201, "School created successfully", data);
   } catch (error) {
     console.error(error);
@@ -107,6 +116,13 @@ exports.updateSchool = async (req, res) => {
     // Update school
     await schoolModel.findByIdAndUpdate(id, payload);
 
+    await notificationModel.create({
+      title: "School update successfully",
+      message: `${schoolName} school has been updated successfully.`,
+      type: "school",
+      role : req.user.role
+    });
+
     // if (!data) {
     //   return errorResponse(res, 404, "School not found", null);
     // }
@@ -123,8 +139,36 @@ exports.deleteSchool = async (req, res) => {
     const id = req.params.id;
     const data = await schoolModel.findByIdAndDelete({ _id: id });
     if (!data) return errorResponse(res, 404, "School not fond", null);
+
+     await notificationModel.create({
+      title: "School delete successfully",
+      message: `${data?.schoolName} school has been deleted successfully.`,
+      type: "school",
+      role : req.user.role
+    });
     return successResponse(res, 200, "School delete successfully", data);
   } catch (error) {
     return errorResponse(res, 500, "Something went wrong", error);
+  }
+};
+
+exports.schoolStatusUpdate = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // find school by id
+    const school = await schoolModel.findById(id);
+
+    if (!school) return errorResponse(res,404,"School not found",null);
+
+    // toggle status
+    school.status = !school.status;
+
+    await school.save();
+
+    return successResponse(res,200,"Status update successfully",null);
+
+  } catch (error) {
+    return errorResponse(res,500,"Something went wrong",error.message);
   }
 };

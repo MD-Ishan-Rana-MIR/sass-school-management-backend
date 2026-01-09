@@ -7,6 +7,7 @@ const {
   updateSchool,
   schoolDetails,
   deleteSchool,
+  schoolStatusUpdate,
 } = require("../controllers/super-admin/school/school.controller");
 const roll = require("../middlewares/role.middleware");
 const superAdminRole = require("../middlewares/super.admin.role.middleware");
@@ -42,5 +43,7 @@ schoolRoute.delete(
   roll("super-admin"),
   deleteSchool
 );
+
+schoolRoute.put("/school-status-update/:id", superAdminRole, roll("super-admin",),schoolStatusUpdate);
 
 module.exports = schoolRoute;
