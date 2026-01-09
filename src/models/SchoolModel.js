@@ -30,6 +30,10 @@ const schoolSchema = new Schema(
       default : true
       
     }
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   { timestamps: true, versionKey: false }
