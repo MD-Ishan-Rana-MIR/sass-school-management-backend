@@ -29,7 +29,7 @@ const schoolSchema = new Schema(
       type : Boolean,
       default : true
       
-    }
+    },
     isActive: {
       type: Boolean,
       default: true,

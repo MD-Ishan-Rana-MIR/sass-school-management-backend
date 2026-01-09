@@ -4,42 +4,7 @@ const adminModel = require("../../models/AdminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-exports.createAdmin = async (req, res) => {
-  try {
-    const { name, email, password, designation, schoolId } = req.body;
-    const adminLogo = `/uploads/admins/${req.file.filename}`;
-    if (!name || !email || !password || !designation || !schoolId)
-      return errorResponse(res, 400, "All fields are required", null);
 
-    const existsAdmin = await adminModel.findOne({ email });
-    if (existsAdmin)
-      return errorResponse(res, 409, "Admin already exists", null);
-
-    const adminId = await generateAdminId();
-
-    const admin = await adminModel.create({
-      name,
-      email,
-      password,
-      designation,
-      schoolId,
-      adminId,
-      image: adminLogo,
-    });
-
-    return successResponse(res, 201, "Admin create successfully", {
-      data: {
-        id: admin._id,
-        adminId: admin.adminId,
-        email: admin.email,
-        role: admin.role,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return errorResponse(res, 500, "Something went wrong", error);
-  }
-};
 
 exports.loginAdmin = async (req, res) => {
   try {

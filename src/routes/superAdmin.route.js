@@ -4,6 +4,7 @@ const {
   superAdminProfile,
   superAdminProfileUpdate,
   superAdminLogout,
+  superAdminImgUpdate
 } = require("../controllers/super-admin/auth/super.admin.auth.controller");
 
 const router = require("express").Router();
@@ -29,6 +30,9 @@ router.put(
   upload.single("image"),
   superAdminProfileUpdate
 );
+
+router.put("/super-admin-img-update", superAdminAuth,role("super-admin"),upload.single("image"), superAdminImgUpdate)
+
 
 router.post(
   "/super-admin-logout",

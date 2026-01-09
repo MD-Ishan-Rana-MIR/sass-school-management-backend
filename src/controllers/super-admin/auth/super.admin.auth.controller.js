@@ -2,6 +2,9 @@ const { errorResponse, successResponse } = require("../../../config/response");
 const superAdminModel = require("../../../models/SuperAdminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+require("dotenv").config();
+
+
 exports.superAdminCreate = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -79,7 +82,7 @@ exports.superAdminProfile = async (req, res) => {
         name: user.name,
         email: user?.email,
         role: user?.role,
-        img: user?.profileImg,
+        img: `${process.env.URL}${user?.profileImg}`,
         createdAt: user?.createdAt,
       },
     });
@@ -87,6 +90,31 @@ exports.superAdminProfile = async (req, res) => {
     return errorResponse(res, 500, "Something went worng", error);
   }
 };
+
+exports.superAdminImgUpdate = async (req,res)=>{
+  try {
+    const imagePath = `/uploads/profiles/${req.file.filename}`;
+
+      const updateData = {
+      profileImg: imagePath,
+      
+    };
+
+    // Update the user in DB
+    await superAdminModel.findByIdAndUpdate(
+      { _id: req.user.id },
+      updateData,
+      { new: true } // return the updated document
+    );
+
+    return successResponse(res,200,"Super admin profile image update successfully",null);
+
+    
+  } catch (error) {
+    return errorResponse(res,500,"Something went wrong",error.message);
+  }
+}
+
 
 exports.superAdminProfileUpdate = async (req, res) => {
   const { name, email } = req.body;
@@ -98,11 +126,11 @@ exports.superAdminProfileUpdate = async (req, res) => {
     // }
 
     // Prepare the image path
-    const imagePath = `/uploads/profiles/${req.file.filename}`;
+    // const imagePath = `/uploads/profiles/${req.file.filename}`;
 
     // Prepare update object
     const updateData = {
-      profileImg: imagePath,
+      // profileImg: imagePath,
       email: email,
       name: name,
     };
