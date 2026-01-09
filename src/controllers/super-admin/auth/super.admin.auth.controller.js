@@ -123,6 +123,41 @@ exports.superAdminProfileUpdate = async (req, res) => {
     console.error("Profile update error:", error);
     return res.status(500).json({ message: "Upload failed", error });
   }
+};
 
-  
+exports.superAdminLogout = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const user = await superAdminModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found ❌",
+      });
+    }
+
+    // Clear the token cookie
+    res.clearCookie("token", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+
+    return res.status(200).json({
+      status: "success",
+      message: "Super admin logged out successfully ✅",
+      data: null,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: "error",
+      message: "Something went wrong ❌",
+      error,
+    });
+  }
 };

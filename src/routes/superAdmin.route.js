@@ -3,6 +3,7 @@ const {
   superAdminLogin,
   superAdminProfile,
   superAdminProfileUpdate,
+  superAdminLogout,
 } = require("../controllers/super-admin/auth/super.admin.auth.controller");
 
 const router = require("express").Router();
@@ -27,6 +28,13 @@ router.put(
   role("super-admin"),
   upload.single("image"),
   superAdminProfileUpdate
+);
+
+router.post(
+  "/super-admin-logout",
+  superAdminAuth,
+  role("super-admin"),
+  superAdminLogout
 );
 
 module.exports = router;
