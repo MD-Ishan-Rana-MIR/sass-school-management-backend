@@ -5,15 +5,16 @@ const adminOuth = require("../middlewares/admin.role.middleware");
 const adminImgUpload = require("../config/adminImg");
 
 const {
-  createAdmin,
   loginAdmin,
   adminProfile,
   adminProfileUpdate,
 } = require("../controllers/admin/admin.auth.controller");
+
 const role = require("../middlewares/role.middleware");
 const superAdminAuth = require("../middlewares/super.admin.role.middleware");
 
 const {
+  createAdmin,
   allAdmin,
   singleAdmin,
   deleteAdmin,
@@ -75,5 +76,7 @@ adminRoute.put(
   adminImgUpload.single("image"),
   updateAdmin
 );
+
+
 
 module.exports = adminRoute;

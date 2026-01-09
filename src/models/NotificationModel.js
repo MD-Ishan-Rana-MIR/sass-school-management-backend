@@ -12,7 +12,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["school", "user", "system"],
+      enum: ["school", "user", "system","admin"],
       default: "system",
     },
     isRead: {

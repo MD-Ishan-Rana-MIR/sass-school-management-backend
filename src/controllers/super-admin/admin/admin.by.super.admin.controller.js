@@ -1,6 +1,54 @@
+const generateAdminId = require("../../../config/generateAdminId");
 const { errorResponse, successResponse } = require("../../../config/response");
 const adminModel = require("../../../models/AdminModel");
+const notificationModel = require("../../../models/NotificationModel");
 
+
+
+
+exports.createAdmin = async (req, res) => {
+  try {
+    const { name, email, password, designation, schoolId } = req.body;
+    const adminLogo = `/uploads/admins/${req.file.filename}`;
+    if (!name || !email || !password || !designation || !schoolId)
+      return errorResponse(res, 400, "All fields are required", null);
+
+    const existsAdmin = await adminModel.findOne({ email });
+    if (existsAdmin)
+      return errorResponse(res, 409, "Admin already exists", null);
+
+    const adminId = await generateAdminId();
+
+    const admin = await adminModel.create({
+      name,
+      email,
+      password,
+      designation,
+      schoolId,
+      adminId,
+      image: adminLogo,
+    });
+
+    await notificationModel.create({
+      title: "New admin Created",
+      message: `${name} admin has been created successfully.`,
+      type: "admin",
+      role : req.user.role
+    })
+
+    return successResponse(res, 201, "Admin create successfully", {
+      data: {
+        id: admin._id,
+        adminId: admin.adminId,
+        email: admin.email,
+        role: admin.role,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res, 500, "Something went wrong", error);
+  }
+};
 exports.allAdmin = async (req, res) => {
   try {
     const { search = "", page = 1, limit = 10 } = req.query;
@@ -157,6 +205,13 @@ exports.updateAdmin = async (req, res) => {
       return res.status(404).json({ message: "Admin not found" });
     }
 
+    await notificationModel.create({
+      title: "Admin update",
+      message: `${name} admin has been updated successfully.`,
+      type: "admin",
+      role : req.user.role
+    });
+
     return successResponse(res, 200, "Profile update successfully", null);
   } catch (error) {
     console.error("Profile update error:", error);
@@ -170,6 +225,12 @@ exports.deleteAdmin = async (req, res) => {
     const data = await adminModel.findByIdAndDelete({ _id: id });
     if (!data) return errorResponse(res, 404, "Admin not found", null);
     successResponse(res, 200, "Admin delete successfully", null);
+    await notificationModel.create({
+      title: "Admin update",
+      message: `${data?.name} admin has been delete successfully.`,
+      type: "admin",
+      role : req.user.role
+    });
   } catch (error) {
     console.log(error);
     return errorResponse(res, 500, "Something went wrong", error);
