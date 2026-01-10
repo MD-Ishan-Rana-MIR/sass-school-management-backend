@@ -8,6 +8,7 @@ const {
   loginAdmin,
   adminProfile,
   adminProfileUpdate,
+  AdminLogout,
 } = require("../controllers/admin/admin.auth.controller");
 
 const role = require("../middlewares/role.middleware");
@@ -84,5 +85,8 @@ adminRoute.put(
   role("super-admin"),
   adminStatusUpdate
 );
+
+// admin logout 
+adminRoute.get("/admin-logout",adminOuth,role("admin"),AdminLogout);
 
 module.exports = adminRoute;
