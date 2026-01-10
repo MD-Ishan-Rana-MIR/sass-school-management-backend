@@ -44,6 +44,17 @@ const teacherSchema = new Schema(
       type: String,
       default: "teacher",
     },
+    isActive : {
+      type : Boolean,
+      default : true
+    },
+    department : {
+      type : String
+    },
+    profileImg: {
+      type: String,
+      default: "/uploads/img.jpg",
+    },
   },
   { timestamps: true, versionKey: false }
 );

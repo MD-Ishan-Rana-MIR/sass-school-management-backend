@@ -111,3 +111,27 @@ exports.adminProfileUpdate = async (req, res) => {
     return res.status(500).json({ message: "Upload failed", error });
   }
 };
+
+exports.AdminLogout = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const user = await adminModel.findById(userId);
+
+    if (!user) return errorResponse(res,404,"Admin not found",null);
+
+    // Clear the token cookie
+    res.clearCookie("token", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+
+    return  successResponse(res,200,"Admin logout successfully",null);
+  } catch (error) {
+    console.error(error);
+    return errorResponse(res,500,"Something went wrong",error.message);
+  }
+};
