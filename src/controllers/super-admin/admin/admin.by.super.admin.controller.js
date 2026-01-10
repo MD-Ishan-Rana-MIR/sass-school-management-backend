@@ -2,9 +2,7 @@ const generateAdminId = require("../../../config/generateAdminId");
 const { errorResponse, successResponse } = require("../../../config/response");
 const adminModel = require("../../../models/AdminModel");
 const notificationModel = require("../../../models/NotificationModel");
-
-
-
+require("dotenv").config();
 
 exports.createAdmin = async (req, res) => {
   try {
@@ -26,15 +24,16 @@ exports.createAdmin = async (req, res) => {
       designation,
       schoolId,
       adminId,
-      image: adminLogo,
+      image: `${process.env.URL}${adminLogo}`,
+      // isActive: true,
     });
 
     await notificationModel.create({
       title: "New admin Created",
       message: `${name} admin has been created successfully.`,
       type: "admin",
-      role : req.user.role
-    })
+      role: req.user.role,
+    });
 
     return successResponse(res, 201, "Admin create successfully", {
       data: {
@@ -100,6 +99,7 @@ exports.allAdmin = async (req, res) => {
           image: 1,
           createdAt: 1,
           updatedAt: 1,
+          isActive: 1,
           "school._id": 1,
           "school.schoolName": 1,
           "school.schoolLogo": 1,
@@ -127,8 +127,6 @@ exports.allAdmin = async (req, res) => {
 
     const countResult = await adminModel.aggregate(countPipeline);
     const totalAdmins = countResult[0]?.total || 0;
-
-    console.log(totalAdmins);
 
     res.status(200).json({
       success: true,
@@ -209,7 +207,7 @@ exports.updateAdmin = async (req, res) => {
       title: "Admin update",
       message: `${name} admin has been updated successfully.`,
       type: "admin",
-      role : req.user.role
+      role: req.user.role,
     });
 
     return successResponse(res, 200, "Profile update successfully", null);
@@ -229,10 +227,23 @@ exports.deleteAdmin = async (req, res) => {
       title: "Admin update",
       message: `${data?.name} admin has been delete successfully.`,
       type: "admin",
-      role : req.user.role
+      role: req.user.role,
     });
   } catch (error) {
     console.log(error);
     return errorResponse(res, 500, "Something went wrong", error);
+  }
+};
+
+exports.adminStatusUpdate = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const data = await adminModel.findOne({ _id: id });
+    if (!data) return errorResponse(res, 404, "Admin not found", null);
+    data.isActive = !data.isActive;
+    await data.save();
+    return successResponse(res, 200, "Status update successfully", null);
+  } catch (error) {
+    errorResponse(res, 500, "Something went wrong", error);
   }
 };

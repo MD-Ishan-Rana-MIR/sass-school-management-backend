@@ -2,6 +2,7 @@ const generateSchoolId = require("../../../config/generateSchoolId");
 const { errorResponse, successResponse } = require("../../../config/response");
 const notificationModel = require("../../../models/NotificationModel");
 const schoolModel = require("../../../models/SchoolModel");
+require("dotenv").config();
 
 exports.createSchool = async (req, res) => {
   try {
@@ -22,7 +23,7 @@ exports.createSchool = async (req, res) => {
       schoolName,
       schoolEmail,
       contactNumber,
-      schoolLogo,
+      schoolLogo : `${process.env.URL}${schoolLogo}`,
       schoolId,
     };
 

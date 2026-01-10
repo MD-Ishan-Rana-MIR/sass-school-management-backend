@@ -19,6 +19,7 @@ const {
   singleAdmin,
   deleteAdmin,
   updateAdmin,
+  adminStatusUpdate,
 } = require("../controllers/super-admin/admin/admin.by.super.admin.controller");
 
 adminRoute.post(
@@ -77,6 +78,11 @@ adminRoute.put(
   updateAdmin
 );
 
-
+adminRoute.put(
+  "/admin-status-update/:id",
+  superAdminAuth,
+  role("super-admin"),
+  adminStatusUpdate
+);
 
 module.exports = adminRoute;
