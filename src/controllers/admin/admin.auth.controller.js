@@ -4,8 +4,6 @@ const adminModel = require("../../models/AdminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-
-
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -18,6 +16,14 @@ exports.loginAdmin = async (req, res) => {
         res,
         400,
         "Admin inactive please contact super admin",
+        null
+      );
+
+    if (!user.isActive)
+      return errorResponse(
+        res,
+        400,
+        "Admin account band.Please contact authority",
         null
       );
 
